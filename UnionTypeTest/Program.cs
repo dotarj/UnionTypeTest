@@ -18,9 +18,9 @@ builder.Services
     .AddFiltering()
     .AddSorting()
     .RegisterDbContext<FilesDbContext>()
-    .AddQueryType<Query>()
-    .AddType<File>()
-    .AddType<Folder>();
+    .AddQueryType<QueryObjectType>()
+    .AddType<FileObjectType>()
+    .AddType<FolderObjectType>();
 
 var app = builder.Build();
 

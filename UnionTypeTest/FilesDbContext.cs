@@ -25,17 +25,7 @@ public class FilesDbContext : DbContext
     }
 }
 
-[UnionType("FileOrFolder")]
-public interface IFileOrFolder
-{
-    int Id { get; set; }
-
-    int FolderId { get; set; }
-
-    string Name { get; set; }
-}
-
-public abstract class FileOrFolder : IFileOrFolder
+public abstract class FileOrFolder
 {
     public int Id { get; set; }
 
