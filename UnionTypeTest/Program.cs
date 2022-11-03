@@ -18,6 +18,11 @@ builder.Services
 var fluentMappingBuilder = MappingSchema.Default.GetFluentMappingBuilder();
 
 fluentMappingBuilder
+    .Entity<Tenant>()
+    .HasTableName("Tenants")
+    .Association(tenant => tenant.Files, (tenant, file) => tenant.Id == file.TenantId);
+
+fluentMappingBuilder
     .Entity<FileOrFolder>()
     .HasTableName("FilesAndFolders")
     .Inheritance(fileOrFolder => fileOrFolder.Type, "FILE", typeof(File))

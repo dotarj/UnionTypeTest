@@ -1,0 +1,20 @@
+{
+  tenants {
+    items {
+      id
+      name
+      files {
+        ... on File {
+          id
+          name
+          size
+        }
+        ... on Folder {
+          id
+          name
+          description
+        }
+      }
+    }
+  }
+}

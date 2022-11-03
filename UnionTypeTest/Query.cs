@@ -5,8 +5,8 @@ namespace UnionTypeTest;
 
 public class Query
 {
-    public IQueryable<object> GetFilesAndFolders([Service] FilesDataConnection dataConnection)
-        => dataConnection.FilesAndFolders;
+    public IQueryable<object> GetTenants([Service] FilesDataConnection dataConnection)
+        => dataConnection.Tenants;
 }
 
 public class QueryObjectType : ObjectType<Query>
@@ -14,12 +14,24 @@ public class QueryObjectType : ObjectType<Query>
     protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
     {
         descriptor
-            .Field(query => query.GetFilesAndFolders(default!))
-            .Type<ListType<FileOrFolderUnionType>>()
-            .UseOffsetPaging<FileOrFolderUnionType>(options: new PagingOptions() { IncludeTotalCount = true })
+            .Field(query => query.GetTenants(default!))
+            .Type<ListType<TenantObjectType>>()
+            .UseOffsetPaging<TenantObjectType>(options: new PagingOptions() { IncludeTotalCount = true })
             .UseProjection()
-            .UseFiltering<FileOrFolder>()
-            .UseSorting<FileOrFolderSortInputType>();
+            .UseFiltering<Tenant>()
+            .UseSorting<TenantSortInputType>();
+    }
+}
+
+public class TenantObjectType : ObjectType<Tenant>
+{
+    protected override void Configure(IObjectTypeDescriptor<Tenant> descriptor)
+    {
+        var objectTypeDescriptor = descriptor.BindFieldsImplicitly();
+
+        objectTypeDescriptor
+            .Field(tenant => tenant.Files)
+            .Type<ListType<FileOrFolderUnionType>>();
     }
 }
 
@@ -49,9 +61,9 @@ public class FolderObjectType : ObjectType<Folder>
     }
 }
 
-public class FileOrFolderSortInputType : SortInputType<FileOrFolder>
+public class TenantSortInputType : SortInputType<Tenant>
 {
-    protected override void Configure(ISortInputTypeDescriptor<FileOrFolder> descriptor)
+    protected override void Configure(ISortInputTypeDescriptor<Tenant> descriptor)
     {
         descriptor.BindFieldsImplicitly();
     }

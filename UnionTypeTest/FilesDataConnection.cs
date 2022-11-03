@@ -11,7 +11,16 @@ public class FilesDataConnection : DataConnection
     {
     }
 
-    public ITable<FileOrFolder> FilesAndFolders => this.GetTable<FileOrFolder>();
+    public ITable<Tenant> Tenants => this.GetTable<Tenant>();
+}
+
+public class Tenant
+{
+    public int Id { get; set; }
+
+    public string Name { get; set; } = String.Empty;
+
+    public List<FileOrFolder> Files { get; set; } = new();
 }
 
 public abstract class FileOrFolder
@@ -22,7 +31,9 @@ public abstract class FileOrFolder
 
     public string Name { get; set; } = string.Empty;
 
-    public string Type { get; set; }
+    public string Type { get; set; } = String.Empty;
+
+    public int TenantId { get; set; }
 }
 
 public class File : FileOrFolder
