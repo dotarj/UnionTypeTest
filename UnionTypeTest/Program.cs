@@ -1,23 +1,33 @@
-using Microsoft.EntityFrameworkCore;
+using LinqToDB.AspNet;
+using LinqToDB.AspNet.Logging;
+using LinqToDB.Configuration;
+using LinqToDB.Mapping;
 using UnionTypeTest;
 using File = UnionTypeTest.File;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<FilesDbContext>(options =>
-{
-    var connectionString = "";
-    var serverVersion = new MariaDbServerVersion(new Version(10, 4, 0));
+builder.Services
+    .AddLinqToDBContext<FilesDataConnection>((provider, options) =>
+    {
+        options
+            .UseMySql("")
+            .UseDefaultLogging(provider);
+    });
 
-    options.UseMySql(connectionString, serverVersion);
-});
+var fluentMappingBuilder = MappingSchema.Default.GetFluentMappingBuilder();
+
+fluentMappingBuilder
+    .Entity<FileOrFolder>()
+    .HasTableName("FilesAndFolders")
+    .Inheritance(fileOrFolder => fileOrFolder.Type, "FILE", typeof(File))
+    .Inheritance(fileOrFolder => fileOrFolder.Type, "FOLDER", typeof(Folder));
 
 builder.Services
     .AddGraphQLServer()
     .AddProjections()
     .AddFiltering()
     .AddSorting()
-    .RegisterDbContext<FilesDbContext>()
     .AddQueryType<QueryObjectType>()
     .AddType<FileObjectType>()
     .AddType<FolderObjectType>();

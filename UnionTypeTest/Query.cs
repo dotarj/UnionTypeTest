@@ -5,8 +5,8 @@ namespace UnionTypeTest;
 
 public class Query
 {
-    public IQueryable<object> GetFilesAndFolders([Service] FilesDbContext dbContext)
-        => dbContext.FilesAndFolders;
+    public IQueryable<object> GetFilesAndFolders([Service] FilesDataConnection dataConnection)
+        => dataConnection.FilesAndFolders;
 }
 
 public class QueryObjectType : ObjectType<Query>
